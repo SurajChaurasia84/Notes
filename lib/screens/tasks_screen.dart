@@ -202,7 +202,7 @@ class _TasksScreenState extends State<TasksScreen> {
       body: Column(
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFECECEC),
               borderRadius: BorderRadius.circular(28),
@@ -220,8 +220,20 @@ class _TasksScreenState extends State<TasksScreen> {
                   Icons.search,
                   color: isDark ? Colors.grey[400] : Colors.grey[600],
                 ),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                        onPressed: () {
+                          setState(() {
+                            _searchQuery = '';
+                            _searchController.clear();
+                          });
+                          FocusScope.of(context).unfocus();
+                        },
+                      )
+                    : null,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
             ),
           ),
@@ -231,6 +243,7 @@ class _TasksScreenState extends State<TasksScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_task_fab',
         onPressed: _showAddTaskSheet,
         backgroundColor: const Color(0xFFF5B041),
         shape: const CircleBorder(),
@@ -251,7 +264,7 @@ class _TasksScreenState extends State<TasksScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
@@ -263,22 +276,22 @@ class _TasksScreenState extends State<TasksScreen> {
   Widget _buildTaskCard(Task task) {
     final isDark = widget.isDarkMode;
     return Container(
-      margin: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+      margin: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           onTap: () {
             setState(() {
               task.isCompleted = !task.isCompleted;
@@ -287,7 +300,7 @@ class _TasksScreenState extends State<TasksScreen> {
           },
           onLongPress: () => _confirmDeleteTask(task),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             child: Row(
               children: [
                 Checkbox(
@@ -306,6 +319,8 @@ class _TasksScreenState extends State<TasksScreen> {
                 Expanded(
                   child: Text(
                     task.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
                       decoration: task.isCompleted ? TextDecoration.lineThrough : null,
