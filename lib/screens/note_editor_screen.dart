@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/note.dart';
 
 class NoteEditorScreen extends StatefulWidget {
@@ -14,23 +17,103 @@ class NoteEditorScreen extends StatefulWidget {
 }
 
 class _NoteEditorScreenState extends State<NoteEditorScreen> {
+  late final String _noteId;
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
-
+  Timer? _debounceTimer;
   int _charCount = 0;
 
   @override
   void initState() {
     super.initState();
+    _noteId = widget.note?.id ?? DateTime.now().millisecondsSinceEpoch.toString();
     _titleController = TextEditingController(text: widget.note?.title ?? '');
     _contentController = TextEditingController(text: widget.note?.content ?? '');
     _charCount = _contentController.text.length;
-    _contentController.addListener(_updateCharCount);
+
+    _titleController.addListener(_onTextChanged);
+    _contentController.addListener(_onTextChanged);
   }
 
-  void _updateCharCount() {
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    _saveNoteLocally(); // Final save on dispose
+    _titleController.removeListener(_onTextChanged);
+    _contentController.removeListener(_onTextChanged);
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  void _onTextChanged() {
     setState(() {
       _charCount = _contentController.text.length;
+    });
+
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _saveNoteLocally();
+    });
+  }
+
+  Future<void> _saveNoteLocally() async {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    // If both fields are empty, we remove the note from storage to prevent saving blank notes
+    if (title.isEmpty && content.isEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      final notesString = prefs.getString('saved_notes');
+      if (notesString != null) {
+        try {
+          final List<dynamic> decoded = jsonDecode(notesString) as List<dynamic>;
+          final list = decoded.map((item) => Note.fromJson(item as Map<String, dynamic>)).toList();
+          list.removeWhere((n) => n.id == _noteId);
+          await prefs.setString('saved_notes', jsonEncode(list.map((n) => n.toJson()).toList()));
+        } catch (e) {
+          debugPrint('Error removing empty note: $e');
+        }
+      }
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final notesString = prefs.getString('saved_notes');
+    List<Note> list = [];
+    if (notesString != null) {
+      try {
+        final List<dynamic> decoded = jsonDecode(notesString) as List<dynamic>;
+        list = decoded.map((item) => Note.fromJson(item as Map<String, dynamic>)).toList();
+      } catch (e) {
+        debugPrint('Error loading notes for auto-save: $e');
+      }
+    }
+
+    final index = list.indexWhere((n) => n.id == _noteId);
+    final noteTitle = title.isEmpty ? 'Untitled' : title;
+    final updatedNote = Note(
+      id: _noteId,
+      title: noteTitle,
+      content: content,
+      timestamp: DateTime.now(),
+    );
+
+    if (index >= 0) {
+      list[index] = updatedNote;
+    } else {
+      list.insert(0, updatedNote);
+    }
+
+    await prefs.setString('saved_notes', jsonEncode(list.map((n) => n.toJson()).toList()));
+  }
+
+  void _save() {
+    _debounceTimer?.cancel();
+    _saveNoteLocally().then((_) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -47,29 +130,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     hour = hour % 12;
     if (hour == 0) hour = 12;
     return '$month $day, $hour:$minute $period';
-  }
-
-  @override
-  void dispose() {
-    _contentController.removeListener(_updateCharCount);
-    _titleController.dispose();
-    _contentController.dispose();
-    super.dispose();
-  }
-
-  void _save() {
-    final title = _titleController.text.trim();
-    final content = _contentController.text.trim();
-
-    if (title.isEmpty && content.isEmpty) {
-      Navigator.pop(context); // Nothing to save
-      return;
-    }
-
-    Navigator.pop(context, {
-      'title': title.isEmpty ? 'Untitled' : title,
-      'content': content,
-    });
   }
 
   @override
