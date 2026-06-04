@@ -67,45 +67,23 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Future<void> _navigateToCreateNote() async {
-    final result = await Navigator.push<Map<String, String>>(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const NoteEditorScreen(),
       ),
     );
-
-    if (result != null) {
-      setState(() {
-        _notes.insert(
-          0,
-          Note(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            title: result['title']!,
-            content: result['content']!,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
-      _saveNotes();
-    }
+    _loadNotes();
   }
 
   Future<void> _navigateToEditNote(Note note) async {
-    final result = await Navigator.push<Map<String, String>>(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => NoteEditorScreen(note: note),
       ),
     );
-
-    if (result != null) {
-      setState(() {
-        note.title = result['title']!;
-        note.content = result['content']!;
-        note.timestamp = DateTime.now();
-      });
-      _saveNotes();
-    }
+    _loadNotes();
   }
 
   void _confirmDeleteNote(Note note) {
@@ -176,8 +154,20 @@ class _NotesScreenState extends State<NotesScreen> {
                   Icons.search,
                   color: isDark ? Colors.grey[400] : Colors.grey[600],
                 ),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                        onPressed: () {
+                          setState(() {
+                            _searchQuery = '';
+                            _searchController.clear();
+                          });
+                          FocusScope.of(context).unfocus();
+                        },
+                      )
+                    : null,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
             ),
           ),
@@ -187,6 +177,7 @@ class _NotesScreenState extends State<NotesScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_note_fab',
         onPressed: _navigateToCreateNote,
         backgroundColor: const Color(0xFFF5B041),
         shape: const CircleBorder(),
@@ -244,6 +235,8 @@ class _NotesScreenState extends State<NotesScreen> {
               children: [
                 Text(
                   note.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
