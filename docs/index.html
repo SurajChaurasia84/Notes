@@ -167,12 +167,27 @@
         }
 
         @media (max-width: 600px) {
+            body {
+                background-color: var(--card-light);
+            }
             .policy-container {
-                padding: 24px;
-                margin: 20px auto;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 30px 20px;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                background-color: transparent !important;
             }
             header h1 {
                 font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 600px) and (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--card-dark);
             }
         }
     </style>
@@ -183,7 +198,7 @@
         <header>
             <div class="app-logo">N</div>
             <h1>Privacy Policy</h1>
-            <div class="last-updated">Last Updated: June 2026</div>
+            <div class="last-updated">Last Updated: June 05, 2026</div>
         </header>
 
         <div class="highlight-card">
@@ -268,8 +283,8 @@
             <p>
                 If you have any questions or suggestions about this Privacy Policy, do not hesitate to contact us at:
             </p>
-            <p style="font-weight: 500; color: var(--primary);">
-                support@notesandtasks.example.com
+            <p>
+                <a href="mailto:support@notesandtasks.example.com" style="font-weight: 500; color: var(--primary); text-decoration: none;">support@notesandtasks.example.com</a>
             </p>
         </div>
     </div>
