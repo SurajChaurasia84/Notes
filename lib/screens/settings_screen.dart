@@ -80,13 +80,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.blue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.person_outline, color: Colors.blue),
+                child: const Icon(Icons.privacy_tip_outlined, color: Colors.blue),
               ),
-              title: const Text('Developer'),
-              trailing: const Text(
-                'Suraj Chaurasia',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
-              ),
+              title: const Text('Privacy Policy'),
+              trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+              onTap: _showPrivacyPolicyDialog,
             ),
             const Divider(height: 1, indent: 56),
             ListTile(
@@ -96,34 +94,88 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.green.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.code_outlined, color: Colors.green),
+                child: const Icon(Icons.help_outline, color: Colors.green),
               ),
-              title: const Text('GitHub Repository'),
-              subtitle: const Text(
-                'SurajChaurasia84/Notes',
-                style: TextStyle(fontSize: 12),
-              ),
+              title: const Text('Help & Support'),
               trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-              onTap: () {
-                // Future implementation: Launch URL
-              },
+              onTap: _showHelpSupportDialog,
             ),
           ], cardBg),
 
           const SizedBox(height: 30),
-
-          // Footer
-          Center(
-            child: Text(
-              'Made with ♥ in Flutter',
-              style: TextStyle(
-                color: isDark ? Colors.grey[700] : Colors.grey[400],
-                fontSize: 12,
-              ),
-            ),
-          ),
         ],
       ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 24.0, top: 12.0),
+        child: Text(
+          '© 2026 Notes & Tasks. All rights reserved.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isDark ? Colors.grey[700] : Colors.grey[400],
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPrivacyPolicyDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Privacy Policy', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const SingleChildScrollView(
+            child: Text(
+              'Your privacy is important to us. This Notes & Tasks app stores all your notes and tasks locally on your device. We do not collect, store, or share any of your personal data or content on external servers.\n\nEverything you write remains strictly yours and secure on this device.',
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showHelpSupportDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Help & Support', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Need assistance? Here is how to use the app:',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '• Adding items: Click the floating "+" button to add a new note or task.\n'
+                '• Editing notes: Simply click on any note card to modify it.\n'
+                '• Completing tasks: Click the checkbox next to any task.\n'
+                '• Deleting items: Long press on any card and confirm deletion.',
+                style: TextStyle(fontSize: 14, height: 1.5),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Got it'),
+            ),
+          ],
+        );
+      },
     );
   }
 
