@@ -84,10 +84,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.1),
+                  color: const Color(0xFFF5B041).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.privacy_tip_outlined, color: Colors.blue),
+                child: const Icon(Icons.privacy_tip_outlined, color: Color(0xFFF5B041)),
               ),
               title: const Text('Privacy Policy'),
               trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -98,10 +98,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
+                  color: const Color(0xFFF5B041).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.help_outline, color: Colors.green),
+                child: const Icon(Icons.help_outline, color: Color(0xFFF5B041)),
               ),
               title: const Text('Help & Support'),
               trailing: const Icon(Icons.chevron_right, color: Colors.grey),
