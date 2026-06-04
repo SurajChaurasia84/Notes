@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Notes & Tasks App</title>
+    <meta name="description" content="Detailed privacy policy for the Notes & Tasks mobile application. Your notes and tasks are kept 100% offline and secure on your device.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #F5B041;
+            --primary-light: #FAD7A0;
+            --bg-light: #F9FAFB;
+            --card-light: #FFFFFF;
+            --text-main-light: #1F2937;
+            --text-muted-light: #4B5563;
+            
+            --bg-dark: #121212;
+            --card-dark: #1E1E1E;
+            --text-main-dark: #F3F4F6;
+            --text-muted-dark: #9CA3AF;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Default Light Theme */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main-light);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        /* Dark Mode Support (Based on System Preference) */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-dark);
+                color: var(--text-main-dark);
+            }
+            .policy-container {
+                background-color: var(--card-dark) !important;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+                border: 1px solid #2C2C2C;
+            }
+            header h1 {
+                color: #FFFFFF !important;
+            }
+            .section h2 {
+                border-bottom: 2px solid #2C2C2C !important;
+                color: #FFFFFF !important;
+            }
+            footer {
+                color: var(--text-muted-dark) !important;
+            }
+            .highlight-card {
+                background: linear-gradient(135deg, rgba(245, 176, 65, 0.1), rgba(250, 215, 160, 0.05)) !important;
+                border-left: 4px solid var(--primary) !important;
+            }
+        }
+
+        .policy-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: var(--card-light);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), #E67E22);
+            border-radius: 20px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(245, 176, 65, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 8px 0;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(245, 176, 65, 0.05), rgba(250, 215, 160, 0.02));
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #F3F4F6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section p, .section li {
+            color: inherit;
+            opacity: 0.85;
+            font-size: 1rem;
+        }
+
+        .section ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted-light);
+            width: 100%;
+        }
+
+        /* Micro-animations */
+        .policy-container:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .policy-container {
+                padding: 24px;
+                margin: 20px auto;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="policy-container" id="policy-card">
+        <header>
+            <div class="app-logo">N</div>
+            <h1>Privacy Policy</h1>
+            <div class="last-updated">Last Updated: June 2026</div>
+        </header>
+
+        <div class="highlight-card">
+            <strong>TL;DR:</strong> Notes & Tasks is a 100% offline app. Your notes, checklists, and tasks never leave your device. We do not collect, share, or sell any personal data.
+        </div>
+
+        <div class="section" id="sec-introduction">
+            <h2>1. Introduction</h2>
+            <p>
+                Welcome to <strong>Notes & Tasks</strong> ("we," "our," or "us"). We are committed to protecting your privacy. This Privacy Policy details how we handle information in our mobile application. 
+                Our application is designed with privacy as the absolute priority: it runs completely locally on your device and does not send any data over the internet.
+            </p>
+        </div>
+
+        <div class="section" id="sec-data-collection">
+            <h2>2. Information Collection & Use</h2>
+            <p>
+                Because Notes & Tasks is an offline application, we do not collect any personal information, usage stats, or content that you create.
+            </p>
+            <ul>
+                <li><strong>Local Storage:</strong> All notes, checklists, titles, dates, and settings are stored locally on your device's sandbox storage using standard platform persistence (SharedPreferences).</li>
+                <li><strong>No User Account:</strong> You do not need to register, login, or connect any social media account to use the application.</li>
+                <li><strong>No Cloud Sync:</strong> The app does not sync data to external servers, cloud databases, or third-party servers.</li>
+            </ul>
+        </div>
+
+        <div class="section" id="sec-permissions">
+            <h2>3. Permissions Required</h2>
+            <p>
+                The application operates with the minimal set of permissions required to function. It does not request permission to access your:
+            </p>
+            <ul>
+                <li>Contacts or Address book</li>
+                <li>Location (GPS)</li>
+                <li>Camera or Microphone</li>
+                <li>Device accounts or Identity</li>
+            </ul>
+            <p>
+                No special high-risk device permissions are required to use this application.
+            </p>
+        </div>
+
+        <div class="section" id="sec-security">
+            <h2>4. Data Security & Storage</h2>
+            <p>
+                Since your data is stored entirely on your own device, its security depends directly on your device's security:
+            </p>
+            <ul>
+                <li>We recommend keeping your device updated and secured using passcode, fingerprint, or face lock authentication.</li>
+                <li><strong>Data Loss Risk:</strong> If you uninstall the application, clear the app data, or factory reset your device, all your saved notes and tasks will be permanently deleted. We cannot recover this data for you as we have no access to it.</li>
+            </ul>
+        </div>
+
+        <div class="section" id="sec-third-party">
+            <h2>5. Third-Party Services</h2>
+            <p>
+                We do not integrate any third-party services that track your usage, display advertising, or analyze user behavior:
+            </p>
+            <ul>
+                <li>No Google Analytics, Firebase Analytics, or other tracking SDKs.</li>
+                <li>No third-party ad networks (like AdMob).</li>
+                <li>No social sharing libraries that track your identity.</li>
+            </ul>
+        </div>
+
+        <div class="section" id="sec-children">
+            <h2>6. Children's Privacy</h2>
+            <p>
+                Our services are safe for children and do not address anyone under the age of 13. Since we do not collect any personal data, we do not knowingly or unknowingly collect or store any information from children.
+            </p>
+        </div>
+
+        <div class="section" id="sec-changes">
+            <h2>7. Changes to This Privacy Policy</h2>
+            <p>
+                We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.
+            </p>
+        </div>
+
+        <div class="section" id="sec-contact">
+            <h2>8. Contact Us</h2>
+            <p>
+                If you have any questions or suggestions about this Privacy Policy, do not hesitate to contact us at:
+            </p>
+            <p style="font-weight: 500; color: var(--primary);">
+                support@notesandtasks.example.com
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Notes & Tasks App. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
