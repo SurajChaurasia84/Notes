@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/task.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -18,33 +20,35 @@ class TasksScreen extends StatefulWidget {
 class _TasksScreenState extends State<TasksScreen> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
+  final List<Task> _tasks = [];
 
-  final List<Task> _tasks = [
-    Task(
-      id: '1',
-      title: 'Buy groceries',
-      isCompleted: false,
-      timestamp: DateTime.now(),
-    ),
-    Task(
-      id: '2',
-      title: 'Call mom at 5 PM',
-      isCompleted: true,
-      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-    ),
-    Task(
-      id: '3',
-      title: 'Finish Flutter assignment',
-      isCompleted: false,
-      timestamp: DateTime(2026, 5, 28),
-    ),
-    Task(
-      id: '4',
-      title: 'Go for a walk',
-      isCompleted: true,
-      timestamp: DateTime(2026, 5, 26),
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final tasksString = prefs.getString('saved_tasks');
+    if (tasksString != null) {
+      try {
+        final List<dynamic> decoded = jsonDecode(tasksString) as List<dynamic>;
+        setState(() {
+          _tasks.clear();
+          _tasks.addAll(decoded.map((item) => Task.fromJson(item as Map<String, dynamic>)));
+        });
+      } catch (e) {
+        debugPrint('Error loading tasks: $e');
+      }
+    }
+  }
+
+  Future<void> _saveTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final tasksString = jsonEncode(_tasks.map((task) => task.toJson()).toList());
+    await prefs.setString('saved_tasks', tasksString);
+  }
 
   @override
   void dispose() {
@@ -126,6 +130,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           ),
                         );
                       });
+                      _saveTasks();
                     }
                     Navigator.pop(context);
                   },
@@ -165,6 +170,7 @@ class _TasksScreenState extends State<TasksScreen> {
                 setState(() {
                   _tasks.removeWhere((item) => item.id == task.id);
                 });
+                _saveTasks();
                 Navigator.pop(context);
               },
               style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -277,6 +283,7 @@ class _TasksScreenState extends State<TasksScreen> {
             setState(() {
               task.isCompleted = !task.isCompleted;
             });
+            _saveTasks();
           },
           onLongPress: () => _confirmDeleteTask(task),
           child: Padding(
@@ -293,6 +300,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     setState(() {
                       task.isCompleted = value ?? false;
                     });
+                    _saveTasks();
                   },
                 ),
                 Expanded(
