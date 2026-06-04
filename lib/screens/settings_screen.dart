@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   final bool isDarkMode;
@@ -91,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               title: const Text('Privacy Policy'),
               trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-              onTap: _showPrivacyPolicyDialog,
+              onTap: _launchPrivacyPolicy,
             ),
             const Divider(height: 1, indent: 56),
             ListTile(
@@ -126,29 +127,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showPrivacyPolicyDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Privacy Policy', style: TextStyle(fontWeight: FontWeight.bold)),
-          content: const SingleChildScrollView(
-            child: Text(
-              'Your privacy is important to us. This Notes & Tasks app stores all your notes and tasks locally on your device. We do not collect, store, or share any of your personal data or content on external servers.\n\nEverything you write remains strictly yours and secure on this device.',
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
-            ),
-          ],
+  Future<void> _launchPrivacyPolicy() async {
+    final url = Uri.parse('https://surajchaurasia84.github.io/Notes/');
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not open the privacy policy link.')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error opening link: $e')),
         );
-      },
-    );
+      }
+    }
   }
+
 
   void _showHelpSupportDialog() {
     showDialog(
