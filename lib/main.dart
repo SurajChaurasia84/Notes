@@ -161,8 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Notes',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.check_box_outline_blank),
-              activeIcon: Icon(Icons.check_box),
+              icon: Icon(Icons.task_alt_outlined),
+              activeIcon: Icon(Icons.task_alt),
               label: 'Tasks',
             ),
           ],
