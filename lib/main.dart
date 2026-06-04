@@ -119,53 +119,64 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final isDark = widget.isDarkMode;
 
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          NotesScreen(
-            onShowSettings: _showSettings,
-            isDarkMode: isDark,
-          ),
-          TasksScreen(
-            onShowSettings: _showSettings,
-            isDarkMode: isDark,
-          ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
+    return PopScope(
+      canPop: _currentIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_currentIndex != 0) {
+          setState(() {
+            _currentIndex = 0;
+          });
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIndex,
+          children: [
+            NotesScreen(
+              onShowSettings: _showSettings,
+              isDarkMode: isDark,
+            ),
+            TasksScreen(
+              onShowSettings: _showSettings,
+              isDarkMode: isDark,
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          selectedItemColor: isDark ? Colors.white : const Color(0xFF212121),
-          unselectedItemColor: isDark ? Colors.grey[600] : Colors.grey[400],
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.description_outlined),
-              activeIcon: Icon(Icons.description),
-              label: 'Notes',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.task_alt_outlined),
-              activeIcon: Icon(Icons.task_alt),
-              label: 'Tasks',
-            ),
-          ],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            selectedItemColor: isDark ? Colors.white : const Color(0xFF212121),
+            unselectedItemColor: isDark ? Colors.grey[600] : Colors.grey[400],
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.description_outlined),
+                activeIcon: Icon(Icons.description),
+                label: 'Notes',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.task_alt_outlined),
+                activeIcon: Icon(Icons.task_alt),
+                label: 'Tasks',
+              ),
+            ],
+          ),
         ),
       ),
     );
