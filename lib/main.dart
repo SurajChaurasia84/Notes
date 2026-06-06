@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/notes_screen.dart';
 import 'screens/tasks_screen.dart';
 import 'screens/settings_screen.dart';
+import 'widgets/auth_wrapper.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +44,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Notes & Tasks',
+      title: 'Note Karo',
       debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
       theme: ThemeData(
@@ -78,9 +79,11 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
-      home: HomeScreen(
-        isDarkMode: _themeMode == ThemeMode.dark,
-        onThemeChanged: toggleTheme,
+      home: AuthWrapper(
+        child: HomeScreen(
+          isDarkMode: _themeMode == ThemeMode.dark,
+          onThemeChanged: toggleTheme,
+        ),
       ),
     );
   }
