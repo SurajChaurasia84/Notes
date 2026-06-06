@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../utils/auth_helper.dart';
 
 class SettingsScreen extends StatefulWidget {
   final bool isDarkMode;
@@ -16,6 +18,39 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isAppLockEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isAppLockEnabled = prefs.getBool('is_app_lock_enabled') ?? false;
+    });
+  }
+
+  Future<void> _toggleAppLock(bool value) async {
+    final success = await AuthHelper.authenticate();
+    if (success) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('is_app_lock_enabled', value);
+      setState(() {
+        _isAppLockEnabled = value;
+      });
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Fingerprint authentication failed/cancelled'),
+          ),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final isDark = widget.isDarkMode;
@@ -57,6 +92,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 widget.onThemeChanged(value);
                 setState(() {});
               },
+            ),
+          ], cardBg),
+
+          const SizedBox(height: 20),
+
+          // Section: Security
+          _buildSectionHeader('Security'),
+          _buildSettingsGroup([
+            SwitchListTile(
+              title: const Text('App Lock'),
+              subtitle: const Text('Lock app with fingerprint biometrics'),
+              secondary: Icon(
+                Icons.fingerprint,
+                color: _isAppLockEnabled ? const Color(0xFFF5B041) : Colors.grey[600],
+              ),
+              value: _isAppLockEnabled,
+              activeThumbColor: const Color(0xFFF5B041),
+              onChanged: _toggleAppLock,
             ),
           ], cardBg),
 
