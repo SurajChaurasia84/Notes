@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/note.dart';
+import '../utils/ad_helper.dart';
 
 class NoteEditorScreen extends StatefulWidget {
   final Note? note;
@@ -112,6 +113,10 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     _debounceTimer?.cancel();
     _saveNoteLocally().then((_) {
       if (mounted) {
+        // Trigger interstitial ad only for new notes on save icon click
+        if (widget.note == null) {
+          AdHelper.showInterstitialAd();
+        }
         Navigator.pop(context);
       }
     });
