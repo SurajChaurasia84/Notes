@@ -159,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               title: const Text('Help & Support'),
               trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-              onTap: _showHelpSupportDialog,
+              onTap: _contactSupport,
             ),
           ], cardBg),
 
@@ -169,7 +169,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 24.0, top: 12.0),
         child: Text(
-          '© 2026 Notes & Tasks. All rights reserved.',
+          '© 2026 Note Karo. All rights reserved.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: isDark ? Colors.grey[700] : Colors.grey[400],
@@ -202,40 +202,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
 
-  void _showHelpSupportDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Help & Support', style: TextStyle(fontWeight: FontWeight.bold)),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Need assistance? Here is how to use the app:',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text(
-                '• Adding items: Click the floating "+" button to add a new note or task.\n'
-                '• Editing notes: Simply click on any note card to modify it.\n'
-                '• Completing tasks: Click the checkbox next to any task.\n'
-                '• Deleting items: Long press on any card and confirm deletion.',
-                style: TextStyle(fontSize: 14, height: 1.5),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Got it'),
-            ),
-          ],
-        );
-      },
+  Future<void> _contactSupport() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'earningbhaijaan1@gmail.com',
+      query: 'subject=Note Karo Support Request',
     );
+    try {
+      if (await canLaunchUrl(emailLaunchUri)) {
+        await launchUrl(emailLaunchUri);
+      } else {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Could not open email app')),
+        );
+      }
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   Widget _buildSectionHeader(String title) {
