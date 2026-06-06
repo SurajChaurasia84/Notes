@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/notes_screen.dart';
 import 'screens/tasks_screen.dart';
 import 'screens/settings_screen.dart';
 import 'widgets/auth_wrapper.dart';
+import 'utils/ad_helper.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  AdHelper.initialize();
   runApp(const MyApp());
 }
 
@@ -105,6 +109,33 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  BannerAd? _bannerAd;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd();
+    // Load interstitial ad so it is ready
+    AdHelper.loadInterstitialAd();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = AdHelper.createBannerAd(
+      onLoaded: () {
+        setState(() {});
+      },
+      onFailed: (error) {
+        debugPrint('Failed to load banner ad: $error');
+      },
+    );
+    _bannerAd?.load();
+  }
 
   void _showSettings() {
     Navigator.push(
@@ -133,17 +164,30 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
-        body: IndexedStack(
-          index: _currentIndex,
+        body: Column(
           children: [
-            NotesScreen(
-              onShowSettings: _showSettings,
-              isDarkMode: isDark,
+            Expanded(
+              child: IndexedStack(
+                index: _currentIndex,
+                children: [
+                  NotesScreen(
+                    onShowSettings: _showSettings,
+                    isDarkMode: isDark,
+                  ),
+                  TasksScreen(
+                    onShowSettings: _showSettings,
+                    isDarkMode: isDark,
+                  ),
+                ],
+              ),
             ),
-            TasksScreen(
-              onShowSettings: _showSettings,
-              isDarkMode: isDark,
-            ),
+            if (_bannerAd != null)
+              Container(
+                alignment: Alignment.center,
+                width: _bannerAd!.size.width.toDouble(),
+                height: _bannerAd!.size.height.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
+              ),
           ],
         ),
         bottomNavigationBar: Container(
