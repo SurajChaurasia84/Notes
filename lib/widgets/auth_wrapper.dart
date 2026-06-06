@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/auth_helper.dart';
+import '../utils/ad_helper.dart';
 
 class AuthWrapper extends StatefulWidget {
   final Widget child;
@@ -34,12 +35,31 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
     if (state == AppLifecycleState.paused) {
       // When app goes to background, lock it again if enabled
       _lockIfEnabled();
+    } else if (state == AppLifecycleState.resumed) {
+      _handleAppResume();
+    }
+  }
+
+  Future<void> _handleAppResume() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLockEnabled = prefs.getBool('is_app_lock_enabled') ?? false;
+
+    if (!isLockEnabled) {
+      // If app lock is disabled, show App Open Ad on resume (if not shown yet this session)
+      AppOpenAdManager.showAdIfAvailable(() {});
+    } else {
+      // If app lock is enabled, we only preload here.
+      // The ad will be shown inside _triggerAuth after successful biometric unlock.
+      AppOpenAdManager.loadAd();
     }
   }
 
   Future<void> _checkLockStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final isLockEnabled = prefs.getBool('is_app_lock_enabled') ?? false;
+
+    // Preload App Open Ad on launch
+    AppOpenAdManager.loadAd();
 
     if (mounted) {
       setState(() {
@@ -49,6 +69,9 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
 
       if (isLockEnabled) {
         _triggerAuth();
+      } else {
+        // Show App Open Ad on launch if lock is disabled, exactly once
+        AppOpenAdManager.showAdIfAvailable(() {});
       }
     }
   }
@@ -77,6 +100,10 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
           _isLocked = false;
         }
       });
+      if (success) {
+        // Show App Open Ad only on the first startup unlock of the session
+        AppOpenAdManager.showAdIfAvailable(() {});
+      }
     }
   }
 
